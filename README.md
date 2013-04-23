@@ -3,6 +3,8 @@ hexelgrid
 
 a simple hexel drawing app using javascript and canvas
 
+Demo here: http://downwith.us/hexel
+
 The MIT License (MIT)
 
 Copyright (c) 2013 Nicholas Ortenzio 
