@@ -29,20 +29,7 @@ $(function () {
 
 	/*** DOM ELEMENTS ***/
 
-	// todo: organize this stuff more
-	var $main = $("#main");
-
-	var $canvas = $("#canvas");	
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext("2d");
-
-	var $grid = $("#grid");
-	var grid = document.getElementById("grid");
-	var gridCtx = grid.getContext("2d");
-
-	var $swatches = $("#swatch li a");
-
-
+	var DOM = {};
 
 	/*** SETTINGS ***/
 
@@ -90,7 +77,6 @@ $(function () {
 		var y = m.center.y - m.pos.y;
 		m.sweep = Math.sqrt((x*x) + (y*y));
 	};
-
 
 	var adjustOutsideCenter = function (m) {
 		var isNegative = (m.center.y < m.pos.y);
@@ -151,6 +137,8 @@ $(function () {
 	/*** DRAWING ***/
 
 	var drawHexagon = function (pos) {
+		var ctx = DOM.ctxCanvas;
+
 		ctx.beginPath();
 		ctx.moveTo(pos.x + hexel.cos[0], pos.y + hexel.sin[0]);
 
@@ -165,23 +153,27 @@ $(function () {
 	};
 
 	var drawHexagonOutline = function (pos) {
-        gridCtx.clearRect(0, 0, grid.width, grid.height);
-		gridCtx.beginPath();
-		gridCtx.moveTo(pos.x + hexel.cos[0], pos.y + hexel.sin[0]);
+		var ctx = DOM.ctxGrid;
+
+        ctx.clearRect(0, 0, grid.width, grid.height);
+		ctx.beginPath();
+		ctx.moveTo(pos.x + hexel.cos[0], pos.y + hexel.sin[0]);
 		for (var i=1; i<=6; i+=1) {
-		    gridCtx.lineTo(pos.x + hexel.cos[i], pos.y + hexel.sin[i]);
+		    ctx.lineTo(pos.x + hexel.cos[i], pos.y + hexel.sin[i]);
 		}
-		gridCtx.lineWidth = 1;
-		gridCtx.strokeStyle = hexel.stroke;
-		gridCtx.stroke();
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = hexel.stroke;
+		ctx.stroke();
 	};
 
 	var drawCircleOutline = function (pos, radius) {
-		gridCtx.beginPath();
-		gridCtx.arc(pos.x, pos.y, radius, 0,Math.PI*2,true);
-		gridCtx.lineWidth = 1;
-		gridCtx.strokeStyle = "#FF0000";
-		gridCtx.stroke();
+		var ctx = DOM.ctxGrid;
+
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, radius, 0,Math.PI*2,true);
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "#FF0000";
+		ctx.stroke();
 	};
 
 
@@ -232,7 +224,7 @@ $(function () {
 	var onSwatchClick = function (e) {
 		e.preventDefault();
 
-		$swatches.removeClass('selected');
+		DOM.$swatches.removeClass('selected');
 		hexel.color = $(this).addClass('selected').attr("value");
 	};
 
@@ -244,6 +236,7 @@ $(function () {
 
 		var sqrt3 = Math.sqrt(3);
 		var rad = Math.PI/180;
+		var thirdpi = Math.PI / 3;
 
 		hexel.side = side;
 		hexel.radius = side;
@@ -254,23 +247,24 @@ $(function () {
 		hexel.period = hexel.width - hexel.edge;
 
 		for (var i=0; i<7; ++i) {
-			hexel.cos[i] = hexel.side * Math.cos(i * 2 * Math.PI / 6);
-			hexel.sin[i] = hexel.side * Math.sin(i * 2 * Math.PI / 6);
+			var ipi = i * thirdpi;
+			hexel.cos[i] = hexel.side * Math.cos(ipi);
+			hexel.sin[i] = hexel.side * Math.sin(ipi);
 		}
-
 	};
  
 	var initCanvasLayout = function () {
 		var x = 0;
 		var y = 0;
 		var i = 0;
-		var height = $canvas.height();
-		var width = $canvas.width();
+		var height = DOM.$canvas.height();
+		var width = DOM.$canvas.width();
 		var c;
 		var colors = [
 			["#eeeeee", "#dddddd"],
 			["#eecccc", "#ddaaaa"]
 		];
+		var ctx = DOM.ctxCanvas;
 		
 		while (x < width) {
 			x = hexel.period * i;
@@ -287,16 +281,28 @@ $(function () {
 	};
 
 	var initSwatches = function () {
-		$swatches.click(onSwatchClick).eq(0).click();
-		$.each($swatches, function(i,n) { 
+		DOM.$swatches.click(onSwatchClick).eq(0).click();
+		$.each(DOM.$swatches, function(i,n) { 
 			var $this = $(this);
 			var val = $this.attr("value");
 			$this.css("background", val);
 		});
 	};
 
+	var initDOM = function () {
+		DOM.$main = $("#main")
+		DOM.$canvas = $("#canvas");	
+		DOM.$grid = $("#grid");
+		DOM.$swatches = $("#swatch li a");
+		
+		DOM.ctxCanvas = DOM.$canvas.get(0).getContext("2d");
+		DOM.ctxGrid = DOM.$grid.get(0).getContext("2d");
+	};
 
 	var init = (function (size) {
+
+		// init DOM cache
+		initDOM();
 
 		// init hexel properties
 		initHexelProperties(size);
@@ -308,10 +314,10 @@ $(function () {
 		initSwatches();
 
 		// init canvas ui events
-		$main.mousedown(onCanvasMouseDown).mousemove(onCanvasMouseMove).mouseup(onCanvasMouseUp); 
+		DOM.$main.mousedown(onCanvasMouseDown).mousemove(onCanvasMouseMove).mouseup(onCanvasMouseUp); 
 		
 
-	}(24));
+	}(16));
 
 
 })
