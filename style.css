@@ -1,8 +1,8 @@
-body { background:#9a9a9a;}
+body { background:#131313;}
 #container { width:960px;  margin:20px auto; }
 
 #main { position:relative; cursor:crosshair; height:600px; }
-#canvas { background:#ffffff; box-shadow: 0 0 20px rgba(0,0,0,.5); border-radius: 3px;}
+#canvas { background:#000000; box-shadow: 0 0 20px rgba(0,0,0,.5); border-radius: 3px;}
 #main canvas.layer { position:absolute; top:0px; left: 0px; }
 
 #swatch { position: relative; margin-top:20px;}

@@ -152,6 +152,28 @@ $(function () {
 		ctx.fill();
 	};
 
+	var drawCirclegon = function (pos) { 
+		var ctx = DOM.ctxCanvas;
+
+		ctx.beginPath();
+		ctx.moveTo(pos.x + hexel.cos[0], pos.y + hexel.sin[0]);
+
+		for (var i=1; i<=6; i+=1) {
+		    ctx.lineTo(pos.x + hexel.cos[i], pos.y + hexel.sin[i]);
+		}
+
+		// just draw outlines for testing
+		ctx.fillStyle = "#000000";
+		ctx.lineHeight = 0;
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, hexel.radius/2, 0,Math.PI*2,true);
+		ctx.fillStyle = hexel.color;
+		ctx.lineHeight = 0;
+		ctx.fill();
+	};
+
 	var drawHexagonOutline = function (pos) {
 		var ctx = DOM.ctxGrid;
 
@@ -193,7 +215,7 @@ $(function () {
 			return;
 		}
 
-		drawHexagon(mouse.center);		
+		drawCirclegon(mouse.center);		
 	};
 
 	var onCanvasMouseMove = function (e) {
@@ -210,7 +232,7 @@ $(function () {
 
 
 		if (hexel.shouldDraw) {
-			drawHexagon(mouse.center);
+			drawCirclegon(mouse.center);
 		}
 	};
 
